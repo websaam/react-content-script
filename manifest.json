@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "React Content Script",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "action": {
     "default_title": "Popup",
     "default_popup": "index.html",
@@ -10,8 +10,8 @@
   "icons": {},
   "content_scripts": [
     {
-      "matches": ["https://blank.org/*"],
-      "js": ["content-script/src/main.tsx"],
+      "matches": ["<all_urls>"],
+      "js": ["src.content-script/src/main.tsx"],
       "media": []
     }
   ]
