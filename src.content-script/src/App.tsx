@@ -10,33 +10,54 @@ import { NewLineToBreak } from "../../components/NewLineToBreak";
 import { FAQItem } from "../../components/FAQItem";
 import { useState } from "react";
 
+const ENGINE = "gpt-3.5-turbo";
+
 function App() {
   const [storageValue, setStorageValue, getAllStorage] =
     useChromeStorage("docuquest-api");
 
   const [loading, setLoading] = useState(false);
-  const [promptAnswer, setPromptAnswer] = useState("");
-  const [faqData, setFaqData] = useState<any>(null);
+  const [promptAnswer, setPromptAnswer] = useState({
+    ctx: "",
+    data: null,
+  });
 
   // it appends "the following text:" to the end of the context
-  const [contextList, setContextList] = useState<string[]>([
-    "Summarize",
-    "Create 8 questions and answers, each question must prepend with 'Q' and answer prepend with 'A', for",
+  const contextMap = new Map([
+    [
+      "SUMMARIZE",
+      {
+        id: "SUMMARIZE",
+        ctx: "Summarize",
+        parser: (text: string) => text,
+      },
+    ],
+    [
+      "FAQ",
+      {
+        id: "FAQ",
+        ctx: "Create 5 HARD questions and answers, each question must prepend with 'Q' and answer prepend with 'A', for",
+        parser: parseFAQText,
+      },
+    ],
   ]);
 
+  const [contextList, setContextList] = useState<Map<string, any>>(contextMap);
+
   function parseFAQText(text: string) {
-    const regex = /(Q\d+\..+?)(A\d+\..+?)(?=(?:Q\d+\.)|$)/gs;
+    const regex =
+      /(Q\d+[:.])([\s\S]+?)(A\d+[:.])([\s\S]+?)(?=(?:Q\d+[:.])|$)/gm;
     const matches = text.matchAll(regex);
     const faqData = [];
 
     for (const match of matches) {
-      let question = match[1].trim();
-      let answer = match[2].trim();
+      let question = match[1] + " " + match[2].trim();
+      let answer = match[4].trim();
 
-      // use regex to remove A1. A2. etc.
-      answer = answer.replace(/A\d+\./, "").trim();
       faqData.push({ question, answer });
     }
+
+    console.log("YY faqData:", faqData);
 
     return faqData;
   }
@@ -48,6 +69,7 @@ function App() {
   };
 
   const getData = async () => {
+    // -- validate api key
     const storageItems = await handleGetAllStorage();
 
     const openaiKey = storageItems["docuquest-api"] as string;
@@ -59,57 +81,46 @@ function App() {
       return;
     }
 
+    // -- get context
+    const ctxName = "FAQ";
+    const selectedCtx = contextList.get(ctxName);
+
     const body = document.querySelector("body");
 
     const promptMaster = new PromptMaster({
       input: body!.innerText,
       apiKey: openaiKey,
-      engine: "gpt-3.5-turbo",
+      engine: ENGINE,
     });
 
-    // setPromptAnswer();
+    console.log("BODY:", body!.innerText);
 
-    // const parsedFaqData = parseFAQText(`Q1. What is Lit Protocol?
-    // A1. Lit Protocol is a programmable key-value based blockchain protocol that enables developers to build decentralized apps.
-
-    // Q2. What are the use cases of Lit Protocol?
-    // A2. The use cases for Lit Protocol include access control, programmable key pairs, and Lit Actions.
-
-    // Q3. What are Lit Actions?
-    // A3. Lit Actions are a feature of Lit Protocol that allow developers to write custom code that can be executed on the blockchain.
-
-    // Q4. How can Lit Actions interact with external APIs?
-    // A4. Lit Actions can use fetch requests to interact with external APIs.
-
-    // Q5. How does Lit Protocol handle consensus for fetch requests?
-    // A5. Lit Protocol sends the fetch request to all nodes in parallel, and consensus is based on at least 23 nodes getting the same response.
-
-    // Q6. How many times will a fetch request be sent on the Lit Network?
-    // A6. A fetch request will be sent N times, where N is the number of nodes in the Lit Network.
-
-    // Q7. What is idempotence, and why is it important when using fetch to write data?
-    // A7. Idempotence is the property of an operation where applying the same operation repeatedly does not modify the result. It is important when using fetch to write data because the request will be sent to the server multiple times.
-
-    // Q8. Where can I find an example project using Lit Actions?
-    // A8. An example project using Lit Actions can be found on the Lit Protocol Developer Docs page under Example Projects.`);
-
-    // setFaqData(parsedFaqData);
-    // return;
-    // --- re-enable thos
     setLoading(true);
     let data;
+
     try {
       data = await promptMaster.context(
-        `${contextList[1]} the following text:"`
+        `${selectedCtx.ctx} the following text:"`
       );
 
       console.log("Xdata:", data);
 
-      const parsedFaqData = parseFAQText(data);
-      console.log("parsedFaqData:", parsedFaqData);
-      setFaqData(parsedFaqData);
-      setPromptAnswer(data);
-      // console.log("data:", data);
+      const parsedData = selectedCtx.parser(data);
+
+      console.log("parsedData:", parsedData);
+
+      if (parsedData.length === 0) {
+        setPromptAnswer({
+          ctx: "SUMMARIZE",
+          data: data as any,
+        });
+      } else {
+        setPromptAnswer({
+          ctx: ctxName,
+          data: parsedData,
+        });
+      }
+
       setLoading(false);
     } catch (e) {
       console.log("error:", e);
@@ -136,18 +147,33 @@ function App() {
                 </div>
               ) : (
                 <>
-                  {faqData && (
-                    <p className="mt-16 prompt-answer">
-                      {/* {JSON.stringify(parseFAQText(promptAnswer))} */}
-                      {/* <NewLineToBreak text={promptAnswer} /> */}
-                      {faqData.map((item: any, index: number) => (
-                        <FAQItem
-                          key={index}
-                          question={item.question}
-                          answer={item.answer}
-                        />
-                      ))}
-                    </p>
+                  {promptAnswer.ctx === "FAQ" && (
+                    <>
+                      {promptAnswer.data && (
+                        <div className="mt-16 prompt-answer">
+                          {/* {JSON.stringify(parseFAQText(promptAnswer))} */}
+                          {/* <NewLineToBreak text={promptAnswer} /> */}
+                          {(promptAnswer.data as any).map(
+                            (item: any, index: number) => (
+                              <FAQItem
+                                key={index}
+                                question={item.question}
+                                answer={item.answer}
+                              />
+                            )
+                          )}
+                        </div>
+                      )}
+                    </>
+                  )}
+                  {promptAnswer.ctx === "SUMMARIZE" && (
+                    <>
+                      {promptAnswer.data && (
+                        <p className="mt-16 prompt-answer">
+                          <NewLineToBreak text={promptAnswer.data} />
+                        </p>
+                      )}
+                    </>
                   )}
                   <>
                     {/* <button onClick={test}>Test</button> */}

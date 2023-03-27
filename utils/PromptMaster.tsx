@@ -85,9 +85,8 @@ export class PromptMaster {
     const answers = [];
 
     let fullPrompt = `${ctx}${this.prompt}`;
-
     console.log("fullPrompt:", fullPrompt);
-
+    
     const tokenCount = this.tokenise(fullPrompt);
     const tokenLimit = this.tokenLimits.get(this.engine);
 
