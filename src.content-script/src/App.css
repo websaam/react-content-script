@@ -5,33 +5,25 @@
 }
 
 .app-docuquest {
-  max-width: 500px;
+  max-width: 314px;
   max-height: 50px;
   min-height: 50px;
   background-color: #1e1e1e;
   position: fixed !important;
   top: calc(12px * 8);
-  right: -159px;
+  right: -293px;
   color: white;
   padding: 12px;
   border-radius: 18px;
   z-index: 999;
-  min-width: 180px;
+  min-width: 314px;
   border-bottom: 5px solid var(--brand-color);
   transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) all;
 }
-.active.app-docuquest{
+.active.app-docuquest {
   overflow: hidden;
 }
-.app-docuquest:before {
-  content: "DocuQuest";
-  position: absolute;
-  left: -55.1px;
-  color: black;
-  transform: rotate(-42deg) translate(37px, 9px);
-  z-index: 1;
-  font-size: 8px;
-}
+
 .app-docuquest ::-webkit-scrollbar {
   width: 8px;
 }
@@ -57,6 +49,8 @@
   right: 12px;
   max-height: 550px;
   overflow: hidden;
+  max-width: 314px;
+  width: 100%;
 }
 
 .app-docuquest h1 {
@@ -109,6 +103,8 @@
 }
 .app-docuquest .w-full {
   width: 100%;
+  min-width: 290px;
+  max-width: 290px;
 }
 
 /* ========== API KEY MODAL ========== */
@@ -197,6 +193,9 @@
 
 .docu-opts {
   padding-top: 6px;
+  width: 100%;
+  max-width: 290px;
+  min-width: 290px;
 }
 .docu-opts label {
   display: flex;

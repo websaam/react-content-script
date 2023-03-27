@@ -11,9 +11,43 @@ import { NewLineToBreak } from "../../components/NewLineToBreak";
 import { FAQItem } from "../../components/FAQItem";
 import { useElementSelector } from "../../components/useElementSelector";
 import { Logo } from "../../components/Logo";
-import { useState } from "react";
+
+import { useEffect, useRef, useState } from "react";
 
 const ENGINE = "gpt-3.5-turbo";
+
+// --- Delayed State Hook ---
+type SetStateAction<S> = S | ((prevState: S) => S);
+
+type DispatchWithDelay<S> = (action: SetStateAction<S>, delay: number) => void;
+
+const useDelayedState = <S,>(
+  initialState: S | (() => S)
+): [S, DispatchWithDelay<S>] => {
+  const [state, setState] = useState(initialState);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const setDelayedState: DispatchWithDelay<S> = (action, delay) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      setState(action);
+      timeoutRef.current = null;
+    }, delay);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  return [state, setDelayedState];
+};
 
 function App() {
   const [storageValue, setStorageValue, getAllStorage] =
@@ -25,6 +59,10 @@ function App() {
 
   const [showModal, setShowModal] = useChromeStorage<Boolean>(
     "docuquest-show-modal"
+  );
+
+  const [showModalDelayed, setShowModalDelayed] = useDelayedState<Boolean>(
+    showModal ? true : false
   );
 
   const { selectedElement, selectedInnerText, resetElementSelector } =
@@ -45,10 +83,12 @@ function App() {
       // close modal
       () => {
         setShowModal(false);
+        setShowModalDelayed(false, 0);
       },
       // open modal
       () => {
         setShowModal(true);
+        setShowModalDelayed(true, 0);
       }
     );
 
@@ -172,31 +212,45 @@ function App() {
   };
 
   function getShortcut(what: string) {
-    let sc = "";
+    const shortcuts = [
+      {
+        platform: "Mac",
+        action: "TO_ENABLE",
+        shortcut: `⌘⇧S`,
+        description: "(⌘⇧S) Highlight",
+      },
+      {
+        platform: "Win",
+        action: "TO_ENABLE",
+        shortcut: "Ctrl+Shift+S",
+        description: "(Ctrl+Shift+S) Highlight",
+      },
+      {
+        action: "TO_DISABLE",
+        shortcut: "(esc)",
+        description: "(esc) Remove Highlight",
+      },
+    ];
 
-    if (what === "TO_ENABLE") {
-      if (navigator.platform.indexOf("Mac") != -1) {
-        sc = `⌘⇧S`;
-      } else if (navigator.platform.indexOf("Win") != -1) {
-        console.log("User is on Windows");
-        sc = "Ctrl+Shift+S";
-      } else {
-        console.log("User is on an unknown platform");
-        sc = "Ctrl+Shift+S";
-      }
-      sc = `(${sc}) Highlight`;
-    }
+    const matchingShortcut = shortcuts.find(
+      (s) =>
+        s.action === what &&
+        (!s.platform || navigator.platform.indexOf(s.platform) !== -1)
+    );
 
-    if (what === "TO_DISABLE") {
-      sc = "(esc) Remove Highlight";
-    }
-    return sc;
+    return matchingShortcut ? matchingShortcut.description : "";
   }
 
   const handleLogoClick = async () => {
     log("handleLogoClick");
     document.getElementById("app-docuquest")!.classList.toggle("active");
     setShowModal(!showModal);
+
+    if (!showModal === true) {
+      setShowModalDelayed(true, 0);
+    } else {
+      setShowModalDelayed(false, 0);
+    }
   };
 
   return (
@@ -209,8 +263,8 @@ function App() {
         <h1>DocuQuest</h1>
       </div>
 
-      <div className={`docu-body ${showModal ? "active" : ""}`}>
-        <>
+      <div className={`docu-body ${showModalDelayed ? "active" : ""}`}>
+        {showModalDelayed && (
           <div className="docu-opts">
             <label>
               <input
@@ -220,65 +274,57 @@ function App() {
               />
               <span> {getShortcut(enabled ? "TO_DISABLE" : "TO_ENABLE")}</span>
             </label>
-            {/* {selectedElement && <div>Selected element: {selectedInnerText}</div>} */}
           </div>
-          <div className="flex">
-            <ApiKeyModal
-              keyName={"docuquest-api"}
-              setKey={setStorageValue}
-              keyValue={storageValue}
-            />
+        )}
+        <div className="flex">
+          <ApiKeyModal
+            keyName={"docuquest-api"}
+            setKey={setStorageValue}
+            keyValue={storageValue}
+          />
 
+          {storageValue && showModalDelayed && (
             <>
-              {storageValue && (
-                <>
-                  {loading ? (
-                    <div className="mt-16 center">
-                      <Loading />
-                    </div>
-                  ) : (
+              {loading ? (
+                <div className="mt-16 center">
+                  <Loading />
+                </div>
+              ) : (
+                <div id="docu-body">
+                  {promptAnswer.ctx === "FAQ" && (
                     <>
-                      {promptAnswer.ctx === "FAQ" && (
-                        <>
-                          {promptAnswer.data && (
-                            <div className="mt-16 prompt-answer">
-                              {/* {JSON.stringify(parseFAQText(promptAnswer))} */}
-                              {/* <NewLineToBreak text={promptAnswer} /> */}
-                              {(promptAnswer.data as any).map(
-                                (item: any, index: number) => (
-                                  <FAQItem
-                                    key={index}
-                                    question={item.question}
-                                    answer={item.answer}
-                                  />
-                                )
-                              )}
-                            </div>
+                      {promptAnswer.data && (
+                        <div className="mt-16 prompt-answer">
+                          {(promptAnswer.data as any).map(
+                            (item: any, index: number) => (
+                              <FAQItem
+                                key={index}
+                                question={item.question}
+                                answer={item.answer}
+                              />
+                            )
                           )}
-                        </>
+                        </div>
                       )}
-                      {promptAnswer.ctx === "SUMMARIZE" && (
-                        <>
-                          {promptAnswer.data && (
-                            <p className="mt-16 prompt-answer">
-                              <NewLineToBreak text={promptAnswer.data} />
-                            </p>
-                          )}
-                        </>
-                      )}
-                      <>
-                        {/* <button onClick={test}>Test</button> */}
-                        <button className="w-full " onClick={() => getData()}>
-                          {enabled ? "Docufy Selected!" : "Docufy Page!"}
-                        </button>
-                      </>
                     </>
                   )}
-                </>
+                  {promptAnswer.ctx === "SUMMARIZE" && (
+                    <>
+                      {promptAnswer.data && (
+                        <p className="mt-16 prompt-answer">
+                          <NewLineToBreak text={promptAnswer.data} />
+                        </p>
+                      )}
+                    </>
+                  )}
+                  <button className="w-full " onClick={() => getData()}>
+                    {enabled ? "Docufy Selected!" : "Docufy Page!"}
+                  </button>
+                </div>
               )}
             </>
-          </div>
-        </>
+          )}
+        </div>
       </div>
     </div>
   );
