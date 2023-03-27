@@ -52,7 +52,7 @@
   padding: 12px;
 }
 .app-docuquest .prompt-answer {
-  /* max-height: 180px; */
+  max-height: 490px;
   height: 100%;
   overflow: auto;
   width: 290px;
@@ -188,6 +188,8 @@
 .docu-opts span {
   display: block;
   padding-left: 4px;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 .docu-head {
   gap: 4px;

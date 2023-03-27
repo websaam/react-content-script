@@ -184,11 +184,11 @@ function App() {
         console.log("User is on an unknown platform");
         sc = "Ctrl+Shift+S";
       }
-      sc = `Enable (${sc})`;
+      sc = `(${sc}) Highlight`;
     }
 
     if (what === "TO_DISABLE") {
-      sc = "Disable (esc)";
+      sc = "(esc) Remove Highlight";
     }
     return sc;
   }
@@ -269,7 +269,7 @@ function App() {
                       <>
                         {/* <button onClick={test}>Test</button> */}
                         <button className="w-full " onClick={() => getData()}>
-                          Summarise
+                          {enabled ? "Docufy Selected!" : "Docufy Page!"}
                         </button>
                       </>
                     </>
