@@ -6,8 +6,10 @@
 
 .app-docuquest {
   max-width: 314px;
+  min-width: 314px;
   max-height: 50px;
   min-height: 50px;
+  box-sizing: border-box;
   background-color: #1e1e1e;
   position: fixed !important;
   top: calc(12px * 8);
@@ -16,7 +18,6 @@
   padding: 12px;
   border-radius: 18px;
   z-index: 999;
-  min-width: 314px;
   border-bottom: 5px solid var(--brand-color);
   transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) all;
 }
