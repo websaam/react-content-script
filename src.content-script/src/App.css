@@ -133,20 +133,21 @@
   /* padding-left: 15px !important; */
   /* color: #9e77f3; */
   /* background: #33257f; */
-  padding: 4px 8px;
+  padding: 12px;
   border-bottom: 2px solid #fa9802;
   margin-bottom: 4px;
   /* margin-left: 12px; */
+  line-height: 1.5em;
 }
 /* .faq-item p:nth-child(1):before {
   content: "❓";
   padding-right: 4px;
   position: absolute;
 } */
-.faq-item p:nth-child(2) {
+.faq-item .faq-answer {
   padding-left: 15px !important;
   color: white !important;
   padding: 12px;
   background: #252526;
-  font-size: 11px;
+  line-height: 1.5em;
 }

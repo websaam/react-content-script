@@ -17,7 +17,7 @@ export const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => {
       <p onClick={toggleAnswer} style={{ cursor: "pointer" }}>
       {question}
       </p>
-      {showAnswer && <p>{answer}</p>}
+      {showAnswer && <div className="faq-answer">{answer}</div>}
     </div>
   );
 };

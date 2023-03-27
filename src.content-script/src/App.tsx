@@ -69,32 +69,32 @@ function App() {
 
     // setPromptAnswer();
 
-    const parsedFaqData = parseFAQText(`Q1. What is Lit Protocol?
-    A1. Lit Protocol is a programmable key-value based blockchain protocol that enables developers to build decentralized apps.
-    
-    Q2. What are the use cases of Lit Protocol?
-    A2. The use cases for Lit Protocol include access control, programmable key pairs, and Lit Actions.
-    
-    Q3. What are Lit Actions?
-    A3. Lit Actions are a feature of Lit Protocol that allow developers to write custom code that can be executed on the blockchain.
-    
-    Q4. How can Lit Actions interact with external APIs?
-    A4. Lit Actions can use fetch requests to interact with external APIs.
-    
-    Q5. How does Lit Protocol handle consensus for fetch requests?
-    A5. Lit Protocol sends the fetch request to all nodes in parallel, and consensus is based on at least 23 nodes getting the same response.
-    
-    Q6. How many times will a fetch request be sent on the Lit Network?
-    A6. A fetch request will be sent N times, where N is the number of nodes in the Lit Network.
-    
-    Q7. What is idempotence, and why is it important when using fetch to write data?
-    A7. Idempotence is the property of an operation where applying the same operation repeatedly does not modify the result. It is important when using fetch to write data because the request will be sent to the server multiple times.
-    
-    Q8. Where can I find an example project using Lit Actions?
-    A8. An example project using Lit Actions can be found on the Lit Protocol Developer Docs page under Example Projects.`);
+    // const parsedFaqData = parseFAQText(`Q1. What is Lit Protocol?
+    // A1. Lit Protocol is a programmable key-value based blockchain protocol that enables developers to build decentralized apps.
 
-    setFaqData(parsedFaqData);
-    return;
+    // Q2. What are the use cases of Lit Protocol?
+    // A2. The use cases for Lit Protocol include access control, programmable key pairs, and Lit Actions.
+
+    // Q3. What are Lit Actions?
+    // A3. Lit Actions are a feature of Lit Protocol that allow developers to write custom code that can be executed on the blockchain.
+
+    // Q4. How can Lit Actions interact with external APIs?
+    // A4. Lit Actions can use fetch requests to interact with external APIs.
+
+    // Q5. How does Lit Protocol handle consensus for fetch requests?
+    // A5. Lit Protocol sends the fetch request to all nodes in parallel, and consensus is based on at least 23 nodes getting the same response.
+
+    // Q6. How many times will a fetch request be sent on the Lit Network?
+    // A6. A fetch request will be sent N times, where N is the number of nodes in the Lit Network.
+
+    // Q7. What is idempotence, and why is it important when using fetch to write data?
+    // A7. Idempotence is the property of an operation where applying the same operation repeatedly does not modify the result. It is important when using fetch to write data because the request will be sent to the server multiple times.
+
+    // Q8. Where can I find an example project using Lit Actions?
+    // A8. An example project using Lit Actions can be found on the Lit Protocol Developer Docs page under Example Projects.`);
+
+    // setFaqData(parsedFaqData);
+    // return;
     // --- re-enable thos
     setLoading(true);
     let data;
@@ -102,6 +102,8 @@ function App() {
       data = await promptMaster.context(
         `${contextList[1]} the following text:"`
       );
+
+      console.log("Xdata:", data);
 
       const parsedFaqData = parseFAQText(data);
       console.log("parsedFaqData:", parsedFaqData);
