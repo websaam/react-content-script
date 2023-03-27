@@ -41,6 +41,14 @@ function App() {
       (enable) => {
         setEnabled(enable);
         resetElementSelector();
+      },
+      // close modal
+      () => {
+        setShowModal(false);
+      },
+      // open modal
+      () => {
+        setShowModal(true);
       }
     );
 

@@ -8,7 +8,9 @@ export const useElementSelector = (
   enabled: boolean,
   opts: UseElementSelectorOpts,
   onClick?: (element: HTMLElement) => void,
-  onHighlight?: (enable: boolean) => void
+  onHighlight?: (enable: boolean) => void,
+  onCloseModal?: () => void,
+  onOpenModal?: () => void
 ) => {
   const [selectedElement, setSelectedElement] = useState<{
     id: string;
@@ -70,6 +72,13 @@ export const useElementSelector = (
         if (onHighlight) {
           onHighlight(true);
         }
+
+        if (!enabled) {
+          document.getElementById("app-docuquest")!.classList.add("active");
+          if (onOpenModal) {
+            onOpenModal();
+          }
+        }
       }
     }
 
@@ -81,6 +90,15 @@ export const useElementSelector = (
 
         if (onHighlight) {
           onHighlight(false);
+        }
+
+        // if it's not highlighted
+        if (!enabled) {
+          // look for #app-docuquest and remove 'active' class
+          document.getElementById("app-docuquest")!.classList.remove("active");
+          if (onCloseModal) {
+            onCloseModal();
+          }
         }
       }
     }
