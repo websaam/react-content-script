@@ -209,17 +209,19 @@ function App() {
         <h1>DocuQuest</h1>
       </div>
 
-      <div className="docu-opts">
-        <label>
-          <input
-            type="checkbox"
-            checked={enabled ? true : false}
-            onChange={handleCheckboxChange}
-          />
-          <span> {getShortcut(enabled ? "TO_DISABLE" : "TO_ENABLE")}</span>
-        </label>
-        {/* {selectedElement && <div>Selected element: {selectedInnerText}</div>} */}
-      </div>
+      {showModal && (
+        <div className="docu-opts">
+          <label>
+            <input
+              type="checkbox"
+              checked={enabled ? true : false}
+              onChange={handleCheckboxChange}
+            />
+            <span> {getShortcut(enabled ? "TO_DISABLE" : "TO_ENABLE")}</span>
+          </label>
+          {/* {selectedElement && <div>Selected element: {selectedInnerText}</div>} */}
+        </div>
+      )}
 
       <div className="flex">
         <ApiKeyModal
