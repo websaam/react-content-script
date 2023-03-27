@@ -10,6 +10,7 @@ import { Loading } from "../../components/Loading";
 import { NewLineToBreak } from "../../components/NewLineToBreak";
 import { FAQItem } from "../../components/FAQItem";
 import { useElementSelector } from "../../components/useElementSelector";
+import { Logo } from "../../components/Logo";
 import { useState } from "react";
 
 const ENGINE = "gpt-3.5-turbo";
@@ -20,6 +21,10 @@ function App() {
 
   const [enabled, setEnabled] = useChromeStorage<Boolean>(
     "docuquest-inspect-element"
+  );
+
+  const [showModal, setShowModal] = useChromeStorage<Boolean>(
+    "docuquest-show-modal"
   );
 
   const { selectedElement, selectedInnerText, resetElementSelector } =
@@ -180,9 +185,21 @@ function App() {
     return sc;
   }
 
+  const handleLogoClick = async () => {
+    log("handleLogoClick");
+    document.getElementById("app-docuquest")!.classList.toggle("active");
+    setShowModal(!showModal);
+  };
+
   return (
-    <div className="app-docuquest">
-      <h1>🤓 DocuQuest</h1>
+    <div
+      id="app-docuquest"
+      className={`app-docuquest ${showModal ? "active" : ""}`}
+    >
+      <div className="flex docu-head">
+        <Logo handleClick={handleLogoClick} />
+        <h1>DocuQuest</h1>
+      </div>
 
       <div className="docu-opts">
         <label>

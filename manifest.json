@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "React Content Script",
+  "name": "Docuquest",
   "version": "0.0.1",
   "permissions": ["storage"],
   "action": {

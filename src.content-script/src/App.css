@@ -6,11 +6,11 @@
 
 .app-docuquest {
   max-width: 500px;
-  max-height: 310px;
+  max-height: 50px;
   background-color: #1e1e1e;
   position: fixed !important;
-  bottom: 78px;
-  right: 12px;
+  top: calc(12px * 8);
+  right: -141px;
   color: white;
   padding: 12px;
   border-radius: 18px;
@@ -19,13 +19,22 @@
   /* height: unset !important;
   width: unset !important; */
   border-bottom: 5px solid var(--brand-color);
-  transition: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) all;
+  transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) all;
+  overflow: hidden;
+}
+
+.active#app-docuquest {
+  right: 12px;
+  max-height: 310px;
+  overflow: unset;
 }
 
 .app-docuquest h1 {
-  font-size: 18px;
+  font-size: 16px;
   margin: 0;
   color: #fa9800;
+  /* open san family */
+  font-family: "Open Sans", sans-serif !important;
 }
 .app-docuquest h2 {
   font-size: 16px;
@@ -172,4 +181,10 @@
 .docu-opts span {
   display: block;
   padding-left: 4px;
+}
+.docu-head {
+  gap: 4px;
+  align-items: center;
+  flex-direction: unset !important;
+  justify-content: left !important;
 }
