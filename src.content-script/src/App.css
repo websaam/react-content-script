@@ -25,7 +25,7 @@
 
 .active#app-docuquest {
   right: 12px;
-  max-height: 310px;
+  max-height: 600px;
   overflow: unset;
 }
 
@@ -52,11 +52,11 @@
   padding: 12px;
 }
 .app-docuquest .prompt-answer {
-  max-height: 180px;
+  /* max-height: 180px; */
   height: 100%;
   overflow: auto;
   width: 290px;
-  font-size: 12px;
+  font-size: 13px;
 }
 .app-docuquest button {
   background-color: #1e1e1e;
@@ -178,6 +178,12 @@
 .docu-opts label {
   display: flex;
   font-size: 12px;
+  color: white !important;
+}
+.docu-opts input[type="checkbox"] {
+  -webkit-appearance: checkbox !important;
+  -moz-appearance: checkbox !important;
+  appearance: checkbox !important;
 }
 .docu-opts span {
   display: block;
