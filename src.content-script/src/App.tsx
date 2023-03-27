@@ -3,18 +3,45 @@
 
 import "./App.css";
 import { PromptMaster } from "../../utils/PromptMaster";
+import { log } from "../../utils/log";
 import { useChromeStorage } from "../../components/useChromeStorage";
 import ApiKeyModal from "../../components/ApiKeyModal";
 import { Loading } from "../../components/Loading";
 import { NewLineToBreak } from "../../components/NewLineToBreak";
 import { FAQItem } from "../../components/FAQItem";
+import { useElementSelector } from "../../components/useElementSelector";
 import { useState } from "react";
 
 const ENGINE = "gpt-3.5-turbo";
 
 function App() {
   const [storageValue, setStorageValue, getAllStorage] =
-    useChromeStorage("docuquest-api");
+    useChromeStorage<String>("docuquest-api");
+
+  const [enabled, setEnabled] = useChromeStorage<Boolean>(
+    "docuquest-inspect-element"
+  );
+
+  const { selectedElement, selectedInnerText, resetElementSelector } =
+    useElementSelector(
+      enabled ? true : false,
+      {
+        except: [".app-docuquest"],
+      },
+      (element: HTMLElement) => {
+        log("(callback) element:", element);
+        getData(element.innerText);
+        setEnabled(false);
+      },
+      (enable) => {
+        setEnabled(enable);
+        resetElementSelector();
+      }
+    );
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEnabled(event.target.checked);
+  };
 
   const [loading, setLoading] = useState(false);
   const [promptAnswer, setPromptAnswer] = useState({
@@ -57,18 +84,18 @@ function App() {
       faqData.push({ question, answer });
     }
 
-    console.log("YY faqData:", faqData);
+    log("YY faqData:", faqData);
 
     return faqData;
   }
 
   const handleGetAllStorage = async () => {
     const items = await getAllStorage();
-    console.log("items:", items);
+    log("items:", items);
     return items;
   };
 
-  const getData = async () => {
+  const getData = async (promptText?: string) => {
     // -- validate api key
     const storageItems = await handleGetAllStorage();
 
@@ -85,15 +112,18 @@ function App() {
     const ctxName = "FAQ";
     const selectedCtx = contextList.get(ctxName);
 
-    const body = document.querySelector("body");
+    if (!promptText) {
+      const body = document.querySelector("body");
+      promptText = body!.innerText;
+    }
 
     const promptMaster = new PromptMaster({
-      input: body!.innerText,
+      input: promptText,
       apiKey: openaiKey,
       engine: ENGINE,
     });
 
-    console.log("BODY:", body!.innerText);
+    log("promptText:", promptText);
 
     setLoading(true);
     let data;
@@ -103,11 +133,11 @@ function App() {
         `${selectedCtx.ctx} the following text:"`
       );
 
-      console.log("Xdata:", data);
+      log("Xdata:", data);
 
       const parsedData = selectedCtx.parser(data);
 
-      console.log("parsedData:", parsedData);
+      log("parsedData:", parsedData);
 
       if (parsedData.length === 0) {
         setPromptAnswer({
@@ -123,14 +153,49 @@ function App() {
 
       setLoading(false);
     } catch (e) {
-      console.log("error:", e);
+      log("error:", e);
     }
     setLoading(false);
   };
 
+  function getShortcut(what: string) {
+    let sc = "";
+
+    if (what === "TO_ENABLE") {
+      if (navigator.platform.indexOf("Mac") != -1) {
+        sc = `⌘⇧S`;
+      } else if (navigator.platform.indexOf("Win") != -1) {
+        console.log("User is on Windows");
+        sc = "Ctrl+Shift+S";
+      } else {
+        console.log("User is on an unknown platform");
+        sc = "Ctrl+Shift+S";
+      }
+      sc = `Enable (${sc})`;
+    }
+
+    if (what === "TO_DISABLE") {
+      sc = "Disable (esc)";
+    }
+    return sc;
+  }
+
   return (
     <div className="app-docuquest">
       <h1>🤓 DocuQuest</h1>
+
+      <div className="docu-opts">
+        <label>
+          <input
+            type="checkbox"
+            checked={enabled ? true : false}
+            onChange={handleCheckboxChange}
+          />
+          <span> {getShortcut(enabled ? "TO_DISABLE" : "TO_ENABLE")}</span>
+        </label>
+        {/* {selectedElement && <div>Selected element: {selectedInnerText}</div>} */}
+      </div>
+
       <div className="flex">
         <ApiKeyModal
           keyName={"docuquest-api"}
@@ -177,7 +242,7 @@ function App() {
                   )}
                   <>
                     {/* <button onClick={test}>Test</button> */}
-                    <button className="w-full " onClick={getData}>
+                    <button className="w-full " onClick={() => getData()}>
                       Summarise
                     </button>
                   </>

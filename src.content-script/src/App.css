@@ -1,3 +1,9 @@
+/* create brand color to root */
+:root {
+  --brand-color: #fa9802;
+  --background-color: #1e1e1e;
+}
+
 .app-docuquest {
   max-width: 500px;
   max-height: 310px;
@@ -12,7 +18,7 @@
   min-width: 180px;
   /* height: unset !important;
   width: unset !important; */
-  border-bottom: 5px solid #fa9802;
+  border-bottom: 5px solid var(--brand-color);
   transition: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) all;
 }
 
@@ -134,7 +140,7 @@
   /* color: #9e77f3; */
   /* background: #33257f; */
   padding: 12px;
-  border-bottom: 2px solid #fa9802;
+  border-bottom: 2px solid var(--brand-color);
   margin-bottom: 4px;
   /* margin-left: 12px; */
   line-height: 1.5em;
@@ -150,4 +156,20 @@
   padding: 12px;
   background: #252526;
   line-height: 1.5em;
+}
+
+.docuquest-highlight {
+  border: 1px dashed var(--brand-color);
+}
+
+.docu-opts {
+  padding-top: 6px;
+}
+.docu-opts label {
+  display: flex;
+  font-size: 12px;
+}
+.docu-opts span {
+  display: block;
+  padding-left: 4px;
 }
