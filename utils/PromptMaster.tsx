@@ -59,7 +59,7 @@ export class PromptMaster {
             content: prompt,
           },
         ],
-        max_tokens: 500,
+        max_tokens: 300,
         temperature: 0.8,
         model: this.engine,
       }),
