@@ -1,39 +1,128 @@
-.App {
-  text-align: center;
+.app-docuquest {
+  max-width: 500px;
+  max-height: 310px;
+  background-color: #1e1e1e;
+  position: fixed !important;
+  bottom: 78px;
+  right: 12px;
+  color: white;
+  padding: 12px;
+  border-radius: 18px;
+  z-index: 999;
+  min-width: 180px;
+  /* height: unset !important;
+  width: unset !important; */
+  border-bottom: 5px solid #fa9802;
+  transition: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) all;
 }
 
-.App-logo {
-  width: unset;
-  height: 40vmin;
-  pointer-events: none;
+.app-docuquest h1 {
+  font-size: 18px;
+  margin: 0;
+  color: #fa9800;
+}
+.app-docuquest h2 {
+  font-size: 16px;
+  margin: 0;
+}
+.mt-16 {
+  margin-top: 16px;
+}
+.app-docuquest .center {
+  justify-content: center;
+  margin: auto;
+  align-items: center;
+  display: flex;
+  padding: 12px;
+}
+.app-docuquest .prompt-answer {
+  max-height: 180px;
+  height: 100%;
+  overflow: auto;
+  width: 290px;
+  font-size: 12px;
+}
+.app-docuquest button {
+  background-color: #1e1e1e;
+  color: white;
+  border: 1px solid white;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 12px;
+  margin-top: 16px;
+}
+.app-docuquest-logo {
+  max-width: 120px;
+}
+.app-docuquest .flex {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  flex-direction: column;
+}
+.app-docuquest .w-full {
+  width: 100%;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* ========== API KEY MODAL ========== */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.modal-content {
+  background-color: white;
+  padding: 12px;
+  max-width: 500px;
+  width: 90%;
+  border-radius: 5px;
+  position: relative;
+  color: black;
+}
+.modal-content input {
+  background-clip: padding-box;
+  background-color: #fff;
+  border: 1px solid #c5c5d2;
+  border-radius: 3px;
+  box-sizing: border-box;
+  color: #0f0f0f;
+  font-weight: 400;
+  line-height: 1.4;
+  margin: 0;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  vertical-align: top;
+  width: 100%;
+  font-size: 12px;
+}
+
+.app-docuquest button {
+  margin-top: 1rem;
+}
+
+.app-docuquest #btn-api-close {
+  position: absolute;
+  top: -7px;
+  right: 12px;
+}
+
+.app-docuquest form {
+  margin-top: 12px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.float-right-right {
+  position: absolute;
+  top: 8px;
+  right: 5px;
+  border: none !important;
+  aspect-ratio: 1;
+  padding: 8px !important;
+  margin-top: 0 !important;
 }
