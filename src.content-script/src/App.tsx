@@ -209,7 +209,7 @@ function App() {
         <h1>DocuQuest</h1>
       </div>
 
-      {showModal && (
+      <div className={`docu-body ${showModal ? "active" : ""}`}>
         <>
           <div className="docu-opts">
             <label>
@@ -279,7 +279,7 @@ function App() {
             </>
           </div>
         </>
-      )}
+      </div>
     </div>
   );
 }
