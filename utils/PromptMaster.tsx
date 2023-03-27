@@ -19,17 +19,11 @@ export class PromptMaster {
     this.apiKey = apiKey;
     this.engine = engine;
 
-    // GPT-3
-    // this.registerTokenLimit("davinci", 2048);
-    // this.registerTokenLimit("curie", 2048);
-    // this.registerTokenLimit("babbage", 2048);
-    // this.registerTokenLimit("ada", 2048);
-    // this.registerTokenLimit("curie-instruct-beta", 2048);
-    // this.registerTokenLimit("davinci-instruct-beta", 2048);
-
-    // GPT-3.5
+    // GPT-3.5 (v1/chat/completions)
     this.registerTokenLimit("gpt-3.5-turbo", 4098);
-    // this.registerTokenLimit("gpt-3.5-turbo-0301", 4098);
+    this.registerTokenLimit("gpt-3.5-turbo-0301", 4098);
+
+    // This uses different endpoints
     // this.registerTokenLimit("text-davinci-003", 4098);
     // this.registerTokenLimit("text-davinci-002", 4098);
     // this.registerTokenLimit("code-davinci-002", 8000);
@@ -65,7 +59,7 @@ export class PromptMaster {
             content: prompt,
           },
         ],
-        max_tokens: 200,
+        max_tokens: 500,
         temperature: 0.8,
         model: this.engine,
       }),

@@ -6,7 +6,11 @@ import { PromptMaster } from "../../utils/PromptMaster";
 import { useChromeStorage } from "../../components/useChromeStorage";
 import ApiKeyModal from "../../components/ApiKeyModal";
 import { Loading } from "../../components/Loading";
-import { useState } from "react";
+import React, { useState } from "react";
+
+interface NewLineToBreakProps {
+  text: string;
+}
 
 function App() {
   const [storageValue, setStorageValue, getAllStorage] =
@@ -15,12 +19,29 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [promptAnswer, setPromptAnswer] = useState("");
 
+  // it appends "the following text:" to the end of the context
+  const [contextList, setContextList] = useState<string[]>([
+    "Summarize",
+    "Create 10 questions and answers, each question must prepend with QUESTION and answer prepend with ANSWER, for",
+  ]);
+
+  const NewLineToBreak: React.FC<NewLineToBreakProps> = ({ text }) => {
+    const lines = text.split("\n").map((line, index) => (
+      <React.Fragment key={index}>
+        {line}
+        <br />
+      </React.Fragment>
+    ));
+
+    return <React.Fragment>{lines}</React.Fragment>;
+  };
+
   const handleGetAllStorage = async () => {
     const items = await getAllStorage();
     console.log("items:", items);
     return items;
   };
-  
+
   const getData = async () => {
     const storageItems = await handleGetAllStorage();
 
@@ -41,10 +62,18 @@ function App() {
     });
 
     setLoading(true);
-    const data = await promptMaster.context(`Summarize the following text:"`);
+    let data;
+    try {
+      data = await promptMaster.context(
+        `${contextList[1]} the following text:"`
+      );
+      setPromptAnswer(data);
+      console.log("data:", data);
+      // setLoading(false);
+    } catch (e) {
+      console.log("error:", e);
+    }
     setLoading(false);
-    console.log("data:", data);
-    setPromptAnswer(data);
   };
 
   return (
@@ -70,7 +99,9 @@ function App() {
                     ""
                   ) : (
                     <>
-                      <p className="mt-16 prompt-answer">{promptAnswer}</p>
+                      <p className="mt-16 prompt-answer">
+                        <NewLineToBreak text={promptAnswer} />
+                      </p>
                     </>
                   )}
                   <>
