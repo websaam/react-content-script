@@ -210,75 +210,76 @@ function App() {
       </div>
 
       {showModal && (
-        <div className="docu-opts">
-          <label>
-            <input
-              type="checkbox"
-              checked={enabled ? true : false}
-              onChange={handleCheckboxChange}
-            />
-            <span> {getShortcut(enabled ? "TO_DISABLE" : "TO_ENABLE")}</span>
-          </label>
-          {/* {selectedElement && <div>Selected element: {selectedInnerText}</div>} */}
-        </div>
-      )}
-
-      <div className="flex">
-        <ApiKeyModal
-          keyName={"docuquest-api"}
-          setKey={setStorageValue}
-          keyValue={storageValue}
-        />
-
         <>
-          {storageValue && (
+          <div className="docu-opts">
+            <label>
+              <input
+                type="checkbox"
+                checked={enabled ? true : false}
+                onChange={handleCheckboxChange}
+              />
+              <span> {getShortcut(enabled ? "TO_DISABLE" : "TO_ENABLE")}</span>
+            </label>
+            {/* {selectedElement && <div>Selected element: {selectedInnerText}</div>} */}
+          </div>
+          <div className="flex">
+            <ApiKeyModal
+              keyName={"docuquest-api"}
+              setKey={setStorageValue}
+              keyValue={storageValue}
+            />
+
             <>
-              {loading ? (
-                <div className="mt-16 center">
-                  <Loading />
-                </div>
-              ) : (
+              {storageValue && (
                 <>
-                  {promptAnswer.ctx === "FAQ" && (
+                  {loading ? (
+                    <div className="mt-16 center">
+                      <Loading />
+                    </div>
+                  ) : (
                     <>
-                      {promptAnswer.data && (
-                        <div className="mt-16 prompt-answer">
-                          {/* {JSON.stringify(parseFAQText(promptAnswer))} */}
-                          {/* <NewLineToBreak text={promptAnswer} /> */}
-                          {(promptAnswer.data as any).map(
-                            (item: any, index: number) => (
-                              <FAQItem
-                                key={index}
-                                question={item.question}
-                                answer={item.answer}
-                              />
-                            )
+                      {promptAnswer.ctx === "FAQ" && (
+                        <>
+                          {promptAnswer.data && (
+                            <div className="mt-16 prompt-answer">
+                              {/* {JSON.stringify(parseFAQText(promptAnswer))} */}
+                              {/* <NewLineToBreak text={promptAnswer} /> */}
+                              {(promptAnswer.data as any).map(
+                                (item: any, index: number) => (
+                                  <FAQItem
+                                    key={index}
+                                    question={item.question}
+                                    answer={item.answer}
+                                  />
+                                )
+                              )}
+                            </div>
                           )}
-                        </div>
+                        </>
                       )}
+                      {promptAnswer.ctx === "SUMMARIZE" && (
+                        <>
+                          {promptAnswer.data && (
+                            <p className="mt-16 prompt-answer">
+                              <NewLineToBreak text={promptAnswer.data} />
+                            </p>
+                          )}
+                        </>
+                      )}
+                      <>
+                        {/* <button onClick={test}>Test</button> */}
+                        <button className="w-full " onClick={() => getData()}>
+                          Summarise
+                        </button>
+                      </>
                     </>
                   )}
-                  {promptAnswer.ctx === "SUMMARIZE" && (
-                    <>
-                      {promptAnswer.data && (
-                        <p className="mt-16 prompt-answer">
-                          <NewLineToBreak text={promptAnswer.data} />
-                        </p>
-                      )}
-                    </>
-                  )}
-                  <>
-                    {/* <button onClick={test}>Test</button> */}
-                    <button className="w-full " onClick={() => getData()}>
-                      Summarise
-                    </button>
-                  </>
                 </>
               )}
             </>
-          )}
+          </div>
         </>
-      </div>
+      )}
     </div>
   );
 }

@@ -30,11 +30,12 @@
 }
 
 .app-docuquest h1 {
+  all: unset !important;
   font-size: 16px;
   margin: 0;
-  color: #fa9800;
-  /* open san family */
+  color: var(--brand-color) !important;
   font-family: "Open Sans", sans-serif !important;
+  font-weight: bold !important;
 }
 .app-docuquest h2 {
   font-size: 16px;
@@ -187,4 +188,10 @@
   align-items: center;
   flex-direction: unset !important;
   justify-content: left !important;
+}
+
+.docu-head > img {
+  all: unset !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
 }
